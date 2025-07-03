@@ -1,21 +1,11 @@
 "use client";
 import Image from "next/image";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRef, useState, useEffect } from "react";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { supabase } from "@/utils/supabaseClient";
 import { useDropzone } from 'react-dropzone';
-
-const wallPosts: Array<{
-	id?: string;
-	user_id?: string;
-	user?: { name: string };
-	body?: string;
-	created_at?: string;
-	images?: string[];
-}> = [];
 
 const DEFAULT_USER = {
 	id: "00000000-0000-0000-0000-000000000001", // Replace with your actual user UUID if needed
@@ -26,13 +16,19 @@ const PROFILE_IMG_KEY = 'profileImg';
 
 export default function Home() {
 	const [profileImg, setProfileImg] = useState<string>("/profile.jpg");
-	const [posts, setPosts] = useState<typeof wallPosts>([]);
+	const [posts, setPosts] = useState<Array<{
+		id?: string;
+		user_id?: string;
+		user?: { name: string };
+		body?: string;
+		created_at?: string;
+		images?: string[];
+	}>>([]);
 	const [inputValue, setInputValue] = useState("");
 	const [openMenuIdx, setOpenMenuIdx] = useState<number | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [loading, setLoading] = useState(false);
 	const [attachedImages, setAttachedImages] = useState<string[]>([]);
-	const attachInputRef = useRef<HTMLInputElement>(null);
 
 	// Fetch posts from Supabase on mount and on changes
 	const fetchPosts = async () => {
@@ -78,11 +74,10 @@ export default function Home() {
 						if (typeof window !== 'undefined') {
 							localStorage.setItem(PROFILE_IMG_KEY, ev.target.result);
 						}
-					} catch (err) {
+					} catch {
 						// If quota exceeded, show a warning and do not persist
 						alert("Profile image is too large to save locally. Please use a smaller image.");
 					}
-					// Optionally upload to Supabase Storage here
 				}
 			};
 			reader.readAsDataURL(file);
@@ -109,28 +104,6 @@ export default function Home() {
 		});
 	};
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'image/*': [] }, multiple: true });
-
-	const handleAttachImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = e.target.files;
-		if (files && files.length > 0) {
-			const readers: Promise<string>[] = [];
-			for (let i = 0; i < files.length; i++) {
-				const file = files[i];
-				readers.push(new Promise((resolve) => {
-					const reader = new FileReader();
-					reader.onload = (ev) => {
-						if (typeof ev.target?.result === "string") {
-							resolve(ev.target.result);
-						}
-					};
-					reader.readAsDataURL(file);
-				}));
-			}
-			Promise.all(readers).then((images) => {
-				setAttachedImages((prev) => [...prev, ...images]);
-			});
-		}
-	};
 
 	const handleShare = async () => {
 		if (inputValue.trim() || attachedImages.length > 0) {
@@ -436,7 +409,7 @@ export default function Home() {
 									{post.images && post.images.length > 0 && (
 										<div className="mt-2">
 											{post.images.map((img: string, i: number) => (
-												<img key={i} src={img} alt="attachment" className="w-32 h-32 object-cover rounded border mb-2" />
+												<Image key={i} src={img} alt="attachment" width={128} height={128} className="w-32 h-32 object-cover rounded border mb-2" />
 											))}
 										</div>
 									)}
