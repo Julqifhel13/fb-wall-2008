@@ -322,7 +322,7 @@ export default function Home() {
 								<div className="flex items-center gap-2 flex-wrap px-2 pb-2 pt-1">
 									{attachedImages.map((img, i) => (
 										<div key={i} className="relative group">
-											<img src={img} alt="Preview" className="w-16 h-16 object-cover border mb-1" style={{ borderRadius: 2 }} />
+											<Image src={img} alt="Preview" width={64} height={64} className="w-16 h-16 object-cover border mb-1" style={{ borderRadius: 2 }} />
 											<button
 												type="button"
 												className="absolute top-0 right-0 bg-white/80 text-xs text-red-700 px-1 py-0.5 border border-gray-300 rounded-none opacity-80 group-hover:opacity-100"
@@ -341,22 +341,22 @@ export default function Home() {
 						<div className="bg-gray-50 border rounded p-2 text-xs mb-2">
 							<div className="text-green-700 font-semibold">RECENT ACTIVITY</div>
 							<div>
-								Mark likes{" "}
+								Mark likes{' '}
 								<a
 									href="#"
 									className="text-blue-700 hover:underline"
 								>
-									Nick Schrock's photo
+									Nick Schrock&apos;s photo
 								</a>
 								.
 							</div>
 							<div>
-								Mark likes{" "}
+								Mark likes{' '}
 								<a
 									href="#"
 									className="text-blue-700 hover:underline"
 								>
-									Bubba Murarka's album Wall Photos
+									Bubba Murarka&apos;s album Wall Photos
 								</a>
 								.
 							</div>
